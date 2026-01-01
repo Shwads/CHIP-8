@@ -17,11 +17,11 @@ else
   $(error Unknown MODE=$(MODE). Use MODE=debug or MODE=release)
 endif
 
-app: main.o
+app: dist/main.o
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-main.o: main.c
+dist/main.o: src/main.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.o app
+	rm -f ./dist/*.o app
