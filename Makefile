@@ -17,11 +17,29 @@ else
   $(error Unknown MODE=$(MODE). Use MODE=debug or MODE=release)
 endif
 
-app: dist/main.o
+SRCDIR := src
+OBJDIR := dist
+
+SRCS := $(wildcard $(SRCDIR)/*.c)
+OBJS := $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
+DEPS := $(OBJS:.o=.d)
+
+app: $(OBJS)
 	$(CC) $^ -o $@ $(LDFLAGS)
 
-dist/main.o: src/main.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR)
+	$(CC) $(CFLAGS) -MMD -MP -c $< -o $@
+
+-include $(DEPS)
+
+# app: dist/main.o
+# 	$(CC) $^ -o $@ $(LDFLAGS)
+
+# dist/main.o: src/main.c
+# 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f ./dist/*.o app
+	rm -f $(OBJS) $(DEPS) app

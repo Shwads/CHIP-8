@@ -1,22 +1,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <SDL.h>
+#include "chip8.h"
+#include "screen.h"
 
 #define PC_MASK = 0x0FFFu;
-
-uint8_t MEMORY[4096];
-uint16_t PC;
-uint16_t I;
-
-uint8_t sound_timer;
-uint8_t delay_timer;
-
-uint8_t registers[16];
-
-typedef struct {
-    int top;
-    uint16_t vals[50];
-} stack;
 
 uint8_t FONT[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -37,24 +25,11 @@ uint8_t FONT[] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-void load_font(uint8_t start_index, uint8_t font_array, uint8_t font_array_size) {
+void load_font(cpu *cpu, uint8_t start_index, uint8_t font_array, uint8_t font_array_size) {
     for (int i = start_index, font_array_pointer = 0; font_array_pointer < font_array_size; font_array_pointer++) {
     }
 }
 
 int main() {
-    printf("Hello World!\n");
-    printf("%d\n", 0x1FFu);
-    printf("###\n");
-    printf("# #\n");
-    printf("# #\n");
-    printf("###\n");
-    printf("%d\n", FONT[0]);
-    printf(" # \n");
-    printf("## \n");
-    printf(" # \n");
-    printf(" # \n");
-    printf(" # \n");
-    printf("###\n");
-    printf("we makefiling");
+    test_func();
 }
