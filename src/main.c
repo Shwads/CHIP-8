@@ -31,5 +31,30 @@ void load_font(cpu *cpu, uint8_t start_index, uint8_t font_array, uint8_t font_a
 }
 
 int main() {
-    test_func();
+    printf("Initialising CHIP-8 emulator!\n");
+
+    init_graphics();
+
+    SDL_Event event;
+    uint8_t running = 1;
+
+    while (running) {
+        while (SDL_PollEvent(&event)) {
+            if (event.type == SDL_QUIT) {
+                running = 0;
+                break;
+            }
+            if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+                switch (event.key.keysym.sym) {
+                    case SDLK_0:
+                        break;
+                    case SDLK_1: break;
+                    case SDLK_2: break;
+                }
+            }
+        }
+        //update_display();
+    }
+    cleanup_graphics();
+    return 0;
 }
