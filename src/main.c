@@ -44,9 +44,12 @@ int main() {
                 running = 0;
                 break;
             }
-            if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+            if (event.type == SDL_KEYDOWN) { //|| event.type == SDL_KEYUP) {
                 switch (event.key.keysym.sym) {
                     case SDLK_0:
+                        uint8_t collisions = draw_sprite(10, 10, &FONT[0], 5);
+                        printf("drew sprite with: %d collisions\n", collisions);
+                        update_display();
                         break;
                     case SDLK_1: break;
                     case SDLK_2: break;

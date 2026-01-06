@@ -58,6 +58,17 @@ void clear_display() {
     memset(display, 0, sizeof(display));
 }
 
+void print_screen_matrix() {
+    int display_index = 0;
+    for (int y = 0; y < SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < SCREEN_WIDTH; x++, display_index++) {
+            printf("%d ", display[display_index]);
+        }
+        printf("\n");
+    }
+}
+
+
 uint8_t draw_sprite(uint8_t x, uint8_t y, uint8_t *sprite, uint8_t height) {
     uint8_t collisions = 0;
 
@@ -65,13 +76,16 @@ uint8_t draw_sprite(uint8_t x, uint8_t y, uint8_t *sprite, uint8_t height) {
         uint8_t pixel_row = sprite[row];
 
         for (uint8_t col = 0; col < 8; col++) {
-            if ((pixel_row & (0x80 >> col)) != 0) {
+            if (pixel_row & (0x80 >> col)) {
                 uint8_t pixel_x = (x + col) % SCREEN_WIDTH; 
                 uint8_t pixel_y = (y + row) % SCREEN_HEIGHT;
+                printf("write to pixel coords: (%d, %d)\n", pixel_x, pixel_y);
 
-                uint8_t index = pixel_x + (pixel_y * SCREEN_WIDTH);
+                uint16_t index = pixel_x + (pixel_y * SCREEN_WIDTH);
+                printf("converts to flattened index: %d\n", index);
 
                 if (display[index]) {
+                    printf("collision at: (%d, %d)\n", pixel_x, pixel_y);
                     collisions += 1;
                 }
 
@@ -79,8 +93,11 @@ uint8_t draw_sprite(uint8_t x, uint8_t y, uint8_t *sprite, uint8_t height) {
             }
         }
     }
-
+    print_screen_matrix();
     return collisions;
+}
+
+uint8_t render_straight_line() {
 }
 
 void update_display() {
@@ -91,7 +108,7 @@ void update_display() {
 
     for (uint8_t y = 0; y < SCREEN_HEIGHT; y++) {
         for (uint8_t x = 0; x < SCREEN_WIDTH; x++) {
-            if (display[x + y * SCREEN_HEIGHT]) {
+            if (display[x + y * SCREEN_WIDTH]) {
                 SDL_Rect pixel = {x, y, 1, 1};
                 SDL_RenderFillRect(renderer, &pixel);
             }
