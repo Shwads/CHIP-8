@@ -1,7 +1,9 @@
 #include "screen.h"
 #include <SDL.h>
+#include <SDL_mixer.h>
 #include <stdint.h>
 #include <stdio.h>
+
 
 //#define SCREEN_HEIGHT 64;
 //#define SCREEN_WIDTH 32;
@@ -9,20 +11,31 @@ const int SCREEN_HEIGHT = 32;
 const int SCREEN_WIDTH = 64;
 const int SCALE = 10;
 
+
 uint8_t display[SCREEN_HEIGHT * SCREEN_WIDTH];
+
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
+
 
 void test_func() {
     printf("Hello from another file!\n");
     printf("And I'll do it again!\n");
 }
 
+
 int init_graphics() {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
-        printf("SDL could not initialize! Error: %s\n", SDL_GetError());
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
+        printf(
+            "SDL could not initialize! Error: %s\n",
+            SDL_GetError()
+        );
         return -1;
+    }
+
+    if (Mix_OpenAudio( 44100, MIX_DEFAULT_FORMAT, 2, 2048 ) < 0) {
+        printf( "SDL_mixer could not initialize! SDL_mixer Error: %s\n", Mix_GetError() );
     }
 
     window = SDL_CreateWindow(
@@ -54,9 +67,11 @@ int init_graphics() {
     return 0;
 }
 
+
 void clear_display() {
     memset(display, 0, sizeof(display));
 }
+
 
 void print_screen_matrix() {
     int display_index = 0;
@@ -97,8 +112,6 @@ uint8_t draw_sprite(uint8_t x, uint8_t y, uint8_t *sprite, uint8_t height) {
     return collisions;
 }
 
-uint8_t render_straight_line() {
-}
 
 void update_display() {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -116,6 +129,7 @@ void update_display() {
     }
     SDL_RenderPresent(renderer);
 }
+
 
 void cleanup_graphics() {
     printf("Cleaning up SDL resources\n");

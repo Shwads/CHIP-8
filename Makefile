@@ -3,16 +3,22 @@ CC      := gcc
 SDL_CFLAGS := $(shell sdl2-config --cflags)
 SDL_LIBS   := $(shell sdl2-config --libs)
 
+SDL_MIXER_CFLAGS := -I/opt/homebrew/include/SDL2
+SDL_MIXER_LIBS 	 := -L/opt/homebrew/lib -lSDL2_mixer
+
+COMBINED_CFLAGS := $(SDL_CFLAGS) $(SDL_MIXER_CFLAGS)
+COMBINED_LIBS := $(SDL_LIBS) $(SDL_MIXER_LIBS)
+
 WARN := -Wall -Wextra
 
 MODE ?= debug
 
 ifeq ($(MODE),debug)
-  CFLAGS  := $(WARN) -O0 -g3 -DDEBUG $(SDL_CFLAGS)
-  LDFLAGS := $(SDL_LIBS)
+  CFLAGS  := $(WARN) -O0 -g3 -DDEBUG $(COMBINED_CFLAGS)
+  LDFLAGS := $(COMBINED_LIBS)
 else ifeq ($(MODE),release)
-  CFLAGS  := $(WARN) -O2 -DNDEBUG $(SDL_CFLAGS)
-  LDFLAGS := $(SDL_LIBS)
+  CFLAGS  := $(WARN) -O2 -DNDEBUG $(COMBINED_CFLAGS)
+  LDFLAGS := $(COMBINED_LIBS)
 else
   $(error Unknown MODE=$(MODE). Use MODE=debug or MODE=release)
 endif

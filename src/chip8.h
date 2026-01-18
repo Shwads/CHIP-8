@@ -1,7 +1,9 @@
 #ifndef CHIP8_H
 #define CHIP8_H
 
+
 #include <stdint.h>
+
 
 typedef struct {
     uint8_t MEMORY[4096];
@@ -19,4 +21,5 @@ typedef struct {
     uint16_t vals[50];
 } stack;
 
-#endif // !CHIP8_H
+
+#endif

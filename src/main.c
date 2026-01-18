@@ -4,7 +4,9 @@
 #include "chip8.h"
 #include "screen.h"
 
+
 #define PC_MASK = 0x0FFFu;
+
 
 uint8_t FONT[] = {
     0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
@@ -25,15 +27,22 @@ uint8_t FONT[] = {
     0xF0, 0x80, 0xF0, 0x80, 0x80  // F
 };
 
-void load_font(cpu *cpu, uint8_t start_index, uint8_t font_array, uint8_t font_array_size) {
-    for (int i = start_index, font_array_pointer = 0; font_array_pointer < font_array_size; font_array_pointer++) {
+
+void load_font(cpu *cpu, uint8_t start_idx, uint8_t *font_arr, uint8_t s_font_arr) {
+    for (int i = start_idx, p_font_arr = 0; p_font_arr < s_font_arr; p_font_arr++) {
+        cpu->MEMORY[i+p_font_arr] = font_arr[p_font_arr];
     }
 }
 
+
 int main() {
     printf("Initialising CHIP-8 emulator!\n");
+    cpu chip8;
 
-    init_graphics();
+    uint8_t graphics = init_graphics();
+    if (graphics != 0) {
+        return -1;
+    }
 
     SDL_Event event;
     uint8_t running = 1;
@@ -44,7 +53,7 @@ int main() {
                 running = 0;
                 break;
             }
-            if (event.type == SDL_KEYDOWN) { //|| event.type == SDL_KEYUP) {
+            if (event.type == SDL_KEYDOWN) {
                 switch (event.key.keysym.sym) {
                     case SDLK_0:
                         uint8_t collisions = draw_sprite(10, 10, &FONT[0], 5);
@@ -55,6 +64,11 @@ int main() {
                     case SDLK_2: break;
                 }
             }
+        }
+        uint32_t ticks = SDL_GetTicks();
+        if (ticks % 16 == 0) {
+            if (chip8.delay_timer > 0) chip8.delay_timer--;
+            if (chip8.sound_timer > 0) chip8.sound_timer--;
         }
         //update_display();
     }
